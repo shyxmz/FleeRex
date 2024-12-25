@@ -16,7 +16,7 @@ const MAX_SPEED: float = 30
 var screen_size = Vector2i(0,0)
 var ground_height
 var max_obs = 0
-# to store the last_obs created 
+
 
 
 #preloading obstacle scenes 
