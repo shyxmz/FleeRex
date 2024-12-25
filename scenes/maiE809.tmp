@@ -1,0 +1,23 @@
+[gd_scene load_steps=6 format=3 uid="uid://ce3fb4kw3167b"]
+
+[ext_resource type="Script" path="res://scripts/main_game.gd" id="1_aaf64"]
+[ext_resource type="PackedScene" uid="uid://cbi8o8rllakf6" path="res://scenes/parallax_bg.tscn" id="1_dircb"]
+[ext_resource type="PackedScene" uid="uid://bts0tsoqjegsm" path="res://scenes/ground.tscn" id="2_ndukg"]
+[ext_resource type="PackedScene" uid="uid://c3d7aymd6woms" path="res://scenes/trex.tscn" id="3_mfngo"]
+[ext_resource type="PackedScene" uid="uid://cmt0gng7omuqx" path="res://scenes/hud.tscn" id="5_i6e5h"]
+
+[node name="mainGame" type="Node"]
+script = ExtResource("1_aaf64")
+
+[node name="parallaxBg" parent="." instance=ExtResource("1_dircb")]
+
+[node name="ground" parent="." instance=ExtResource("2_ndukg")]
+
+[node name="trex" parent="." instance=ExtResource("3_mfngo")]
+position = Vector2(264, 608)
+
+[node name="gameCamera" type="Camera2D" parent="."]
+position = Vector2(640, 384)
+scale = Vector2(6, 6)
+
+[node name="HUD" parent="." instance=ExtResource("5_i6e5h")]

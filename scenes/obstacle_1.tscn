@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://d1fyn8en86i4n"]
+
+[ext_resource type="Texture2D" uid="uid://mbpwi864vtha" path="res://assets/props/2.png" id="1_bf3r0"]
+
+[node name="obstacle1" type="Area2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(-4, 1.90735e-06)
+scale = Vector2(4.94118, 7.7037)
+texture = ExtResource("1_bf3r0")
+
+[node name="obCollider" type="CollisionPolygon2D" parent="."]
+texture_filter = 1
+position = Vector2(8, 3.99999)
+scale = Vector2(6, 7.6875)
+polygon = PackedVector2Array(-14.6667, 13.3333, -16, -13.3333, 10.6667, -13.3333, 13.3333, 13.3333)
