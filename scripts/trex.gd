@@ -15,13 +15,13 @@ func _physics_process(delta):
 		else:
 			$runCollision.disabled = false
 			if Input.is_action_pressed("trex_jump"):
-				$jumpSound 
-				$jumpSound.play() 
+				#$jumpSound.play()
 				velocity.y = JUMP_VELOCITY
 			elif Input.is_action_pressed("trex_duck"):
 				$trexAnimation.play("duck")
 				$runCollision.disabled = true
 			else:
 				$trexAnimation.play("run")
+			
 		
 	move_and_slide()

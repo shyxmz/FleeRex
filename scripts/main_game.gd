@@ -16,6 +16,8 @@ const MAX_SPEED: float = 30
 var screen_size = Vector2i(0,0)
 var ground_height
 var max_obs = 0
+var coin_timer = 0
+var coin_time_interval: float = 0.2
 # to store the last_obs created 
 
 
@@ -25,25 +27,40 @@ var ob2 = preload("res://scenes/obstacle_2.tscn")
 var ob3 = preload("res://scenes/obstacle_3.tscn")
 var ob4 = preload("res://scenes/obstacle_4.tscn")
 var ob5 = preload("res://scenes/obstacle_5.tscn")
-var bird = preload("res://scenes/bird.tscn")
+var coin = preload("res://scenes/coin.tscn")
+
+var coins_collected = 0
+var coins: Array = []
+
 #grouping obstacles together in a array
 var ob_types: = [ob1,ob2,ob3,ob4,ob5]
 var ob_index = 0
 #array to track obstacles we have created
 var obs: Array
-#spawning birds at two height- one for jumping and one for ducking
-var bird_height: = [544,608,480]
 var last_obs 
+
+var coin_sound: AudioStreamPlayer2D
+
+
 
 #Executed once after node is added to the scene tree and all its child nodes are ready 
 #So this will run as soon as the game runs 
 func _ready() -> void:
+	coin_sound = $coinSound
 	screen_size = get_viewport().get_visible_rect().size
 	ground_height = $ground.get_node("Sprite2D").texture.get_height()
 	$gameOver.get_node("restart").pressed.connect(new_game)
 	new_game()
 
 func new_game():
+	for coin in coins:
+		coin.queue_free()
+	coins.clear()
+	
+	for ob in obs:
+		ob.queue_free()
+	obs.clear()
+	
 	game_running = false
 	get_tree().paused = false
 	score = 0
@@ -70,6 +87,7 @@ func _process(delta: float) -> void:
 		
 		# In order to increase the score at a slow pace 
 		score_timer += delta
+		coin_timer += delta
 		# If the score timer exceeds the 0.3 mark then reset the score timer and increment the score by 1 
 		if score_timer > time_interval:
 			score_timer -= time_interval
@@ -78,11 +96,20 @@ func _process(delta: float) -> void:
 		if $gameCamera.position.x - $ground.position.x > screen_size.x * 1.5:
 			$ground.position.x += screen_size.x
 			
+			
+		if coin_timer > coin_time_interval:
+			coin_timer -= coin_time_interval
+			generate_coin()
 		# dump the obstacles that are that the trex has passed 
 		for ob in obs:
 			if ob.position.x < ($gameCamera.position.x-screen_size.x):
 				ob.queue_free()
 				obs.erase(ob)
+				
+		for coin in coins:
+			if coin.position.x < ($gameCamera.position.x - screen_size.x):
+				coin.queue_free()
+				coins.erase(coin)
 				
 			
 	else:
@@ -117,7 +144,7 @@ func create_ob_cluster(max_obs):
 	
 
 func create_new_obs(ob, x, y):
-	var y1 = y+15
+	var y1 = y+30
 	ob.position = Vector2i(x,y1)
 	ob.body_entered.connect(hit_ob)
 	add_child(ob) # adding obs to the scene
@@ -134,8 +161,37 @@ func game_over():
 	$gameOver.get_node("restart").show()
 	
 	
-		
-		
+# Generate the coin at a random position
+func generate_coin():
+	var coin_gen = coin.instantiate()
+	var coin_height = coin_gen.get_node("AnimatedSprite2D").sprite_frames.get_frame_texture("coin", 0).get_height()
+	var coin_scale = coin_gen.get_node("AnimatedSprite2D").scale
+	var coin_x: int = screen_size.x + $gameCamera.position.x + 175
+	var coin_y: int = screen_size.y - ground_height - (coin_height + coin_scale.y / 2) + 8
+	create_coin(coin_gen, coin_x, coin_y)
+
+# Create and position the coin in the scene
+func create_coin(coin_gen, coin_x, coin_y):
+	coin_gen.position = Vector2i(coin_x, coin_y)
+	# Get the Area2D of the coin and connect the signal
+	var area = coin_gen.get_node("Area2D")
+	area.body_entered.connect(Callable(self, "collect_coin").bind(coin_gen))  # Bind the coin_gen argument
+	area.body_entered.connect(play_coin_sound)
+	# Add the coin to the scene and track it in the coins array
+	add_child(coin_gen)
+	coins.append(coin_gen)
+
+# Handle coin collection when the Trex collides with the coin
+func collect_coin(body, coin_gen):
+	if body.name == "trex":
+		coins_collected += 1
+		if coin_gen in coins:
+			coins.erase(coin_gen)
+		coin_gen.queue_free()  # Remove the coin from the scene
+
+func play_coin_sound(body):
+	if body.name == "trex":
+		coin_sound.play()
 #display score
 func show_score():
 	$HUD.get_node("score").text = "SCORE: " + str(score)

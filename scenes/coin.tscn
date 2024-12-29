@@ -1,0 +1,53 @@
+[gd_scene load_steps=7 format=3 uid="uid://c4b41diappq8e"]
+
+[ext_resource type="Texture2D" uid="uid://covbq54xe8udb" path="res://assets/props/Coin.png" id="1_oe2cr"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qekq6"]
+atlas = ExtResource("1_oe2cr")
+region = Rect2(0, 0, 10, 10)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nwsl2"]
+atlas = ExtResource("1_oe2cr")
+region = Rect2(10, 0, 10, 10)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_byqw7"]
+atlas = ExtResource("1_oe2cr")
+region = Rect2(20, 0, 10, 10)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_adpw1"]
+atlas = ExtResource("1_oe2cr")
+region = Rect2(30, 0, 10, 10)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_qeuvp"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qekq6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nwsl2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_byqw7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_adpw1")
+}],
+"loop": true,
+"name": &"coin",
+"speed": 10.0
+}]
+
+[node name="Coin" type="Node2D"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+scale = Vector2(7, 7)
+sprite_frames = SubResource("SpriteFrames_qeuvp")
+animation = &"coin"
+autoplay = "coin"
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Area2D"]
+polygon = PackedVector2Array(-24, -24, 16, -24, 24, -8, 24, 24, 8, 40, -16, 40, -32, 24, -32, -16)

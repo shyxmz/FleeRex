@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://bwkvshm7fghuj" path="res://assets/props/4.png" id="1_0ptgv"]
 
 [node name="obstacle5" type="Area2D"]
+z_index = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1
