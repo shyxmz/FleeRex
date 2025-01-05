@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://ce3fb4kw3167b"]
+[gd_scene load_steps=9 format=3 uid="uid://ce3fb4kw3167b"]
 
 [ext_resource type="Script" path="res://scripts/main_game.gd" id="1_aaf64"]
 [ext_resource type="PackedScene" uid="uid://cbi8o8rllakf6" path="res://scenes/parallax_bg.tscn" id="1_dircb"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://cmt0gng7omuqx" path="res://scenes/hud.tscn" id="5_i6e5h"]
 [ext_resource type="PackedScene" uid="uid://cpups3l3o76eh" path="res://scenes/game_over.tscn" id="6_lecqr"]
 [ext_resource type="AudioStream" uid="uid://bht6tcg77q5vt" path="res://assets/sounds/coin_collected.mp3" id="7_dhpa1"]
+[ext_resource type="PackedScene" uid="uid://cmbjqiw0wkvgo" path="res://scenes/char_2.tscn" id="8_5c1u5"]
 
 [node name="mainGame" type="Node"]
 script = ExtResource("1_aaf64")
@@ -16,7 +17,8 @@ script = ExtResource("1_aaf64")
 [node name="ground" parent="." instance=ExtResource("2_ndukg")]
 
 [node name="trex" parent="." instance=ExtResource("3_mfngo")]
-position = Vector2(224, 601)
+visible = false
+position = Vector2(184, -152)
 
 [node name="gameCamera" type="Camera2D" parent="."]
 position = Vector2(640, 384)
@@ -29,3 +31,6 @@ process_mode = 2
 
 [node name="coinSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("7_dhpa1")
+
+[node name="Char2" parent="." instance=ExtResource("8_5c1u5")]
+position = Vector2(160, 688)

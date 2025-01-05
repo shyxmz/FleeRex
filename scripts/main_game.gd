@@ -1,7 +1,7 @@
 extends Node
 
 #camera and trex initial posi
-const TREX_START_POSI = Vector2(152,608)
+const CHAR_START_POSI = Vector2(152,608)
 const CAMERA_START_POSI = Vector2(640,384)
 var score_timer:float = 0
 var score = 0
@@ -17,7 +17,7 @@ var screen_size = Vector2i(0,0)
 var ground_height
 var max_obs = 0
 var coin_timer = 0
-var coin_time_interval: float = 0.2
+var coin_time_interval: float = 0.27
 # to store the last_obs created 
 
 
@@ -65,8 +65,8 @@ func new_game():
 	get_tree().paused = false
 	score = 0
 	show_score()
-	$trex.position = TREX_START_POSI
-	$trex.velocity = Vector2i(0,0)
+	$Char2.position = CHAR_START_POSI
+	$Char2.velocity = Vector2i(0,0)
 	$gameCamera.position = CAMERA_START_POSI
 	$ground.position = Vector2i(0,0)
 	$HUD.get_node("play").show()
@@ -81,7 +81,7 @@ func _process(delta: float) -> void:
 		print(speed)
 		#Generate obstacles before trex starts moving forward
 		generate_obs() 
-		$trex.position.x += speed
+		$Char2.position.x += speed
 		$gameCamera.position.x += speed
 		
 		
@@ -113,7 +113,7 @@ func _process(delta: float) -> void:
 				
 			
 	else:
-		if Input.is_action_pressed("trex_jump"):
+		if Input.is_action_pressed("jump"):
 			game_running = true
 			$HUD.get_node("play").hide()
 			
@@ -129,6 +129,9 @@ func generate_obs():
 		else:
 			max_obs = 3
 			create_ob_cluster(max_obs)
+			
+			
+			
 			
 func create_ob_cluster(max_obs):
 	ob_index = randi_range(0,4)
@@ -152,7 +155,7 @@ func create_new_obs(ob, x, y):
 	
 		
 func hit_ob(body):
-	if body.name == "trex":
+	if body.name == "Char2":
 		game_over()
 		
 func game_over():
@@ -167,34 +170,30 @@ func generate_coin():
 	var coin_height = coin_gen.get_node("AnimatedSprite2D").sprite_frames.get_frame_texture("coin", 0).get_height()
 	var coin_scale = coin_gen.get_node("AnimatedSprite2D").scale
 	var coin_x: int = screen_size.x + $gameCamera.position.x + 175
-	var coin_y: int = screen_size.y - ground_height - (coin_height + coin_scale.y / 2) + 8
+	var coin_y: int = screen_size.y - ground_height - (coin_height + coin_scale.y / 2) 
 	create_coin(coin_gen, coin_x, coin_y)
 
 # Create and position the coin in the scene
 func create_coin(coin_gen, coin_x, coin_y):
-	coin_gen.position = Vector2i(coin_x, coin_y)
+	var coin_y_new = coin_y - 50
+	coin_gen.position = Vector2i(coin_x, coin_y_new)
 	# Get the Area2D of the coin and connect the signal
 	var area = coin_gen.get_node("Area2D")
 	area.body_entered.connect(Callable(self, "collect_coin").bind(coin_gen))  # Bind the coin_gen argument
-	area.body_entered.connect(play_coin_sound)
 	# Add the coin to the scene and track it in the coins array
 	add_child(coin_gen)
 	coins.append(coin_gen)
 
 # Handle coin collection when the Trex collides with the coin
 func collect_coin(body, coin_gen):
-	if body.name == "trex":
+	if body.name == "Char2":
 		coins_collected += 1
 		if coin_gen in coins:
 			coins.erase(coin_gen)
 		coin_gen.queue_free()  # Remove the coin from the scene
-
-func play_coin_sound(body):
-	if body.name == "trex":
-		coin_sound.play()
 #display score
 func show_score():
-	$HUD.get_node("score").text = "SCORE: " + str(score)
+	$HUD.get_node("score").text = "SCORE: " + str(coins_collected)
 	
 	
 	# to load the map infinitely ->

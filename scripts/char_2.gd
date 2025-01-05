@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-const GRAVITY: int = 200
+const GRAVITY: int = 4200
 const JUMP_VELOCITY: int = -1900
 
 
@@ -11,18 +11,17 @@ func _ready() -> void:
 func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y += GRAVITY*delta
-		$trexAnimation.play("jump")
-		
+		$char2Animation.play("jump")
 	if is_on_floor():
 		if not get_parent().game_running:
-			$trexAnimation.play("idle")
+			$char2Animation.play("idle")
 		else:
-			var area = $trexArea
 			$runCollision.disabled = false
 			if Input.is_action_pressed("jump"):
-				#$jumpSound.play()
+				$char2Animation.play("jump")
 				velocity.y = JUMP_VELOCITY
 			else:
-				$trexAnimation.play("run")
+				$char2Animation.play("run")
 	move_and_slide()
+		
 	
